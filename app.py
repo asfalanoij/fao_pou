@@ -3,17 +3,26 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 import os
+from typing import Optional, Any
 
-# --- Step 2: Load Data File ---
+# --- Constants ---
 DATA_FILE = 'FAOSTAT_data_en_4-12-2025.csv'
-if not os.path.exists(DATA_FILE):
-    st.error(f"Data file '{DATA_FILE}' not found. Please upload it to the app directory.")
-    st.stop()
-data = pd.read_csv(DATA_FILE)
+ITEM_UNDERNOURISHMENT = 'Prevalence of undernourishment (percent) (3-year average)'
+DEFAULT_COUNTRIES = [
+    'Indonesia', 'Viet Nam', 'Philippines', 'India', 'Egypt',
+    'Brazil', 'Nigeria', 'Japan', 'Republic of Korea', 'China'
+]
+REGION_MAP = {
+    'Indonesia': 'Southeast Asia', 'Malaysia': 'Southeast Asia', 'Thailand': 'Southeast Asia',
+    'Vietnam': 'Southeast Asia', 'Viet Nam': 'Southeast Asia', 'Philippines': 'Southeast Asia',
+    'China': 'East Asia', 'Japan': 'East Asia', 'South Korea': 'East Asia', 'Republic of Korea': 'East Asia',
+    'Nigeria': 'Sub-Saharan Africa', 'Kenya': 'Sub-Saharan Africa', 'Egypt': 'MENA',
+    'Brazil': 'Latin America', 'India': 'South Asia'
+}
 
-
-# --- Step 3: Clean 'Year' Field ---
-def get_middle_year(year_str):
+# --- Data Utilities ---
+def get_middle_year(year_str: Any) -> Optional[int]:
+    """Convert a year or year range string to its middle year as int."""
     try:
         if isinstance(year_str, str) and '-' in year_str:
             start_year, end_year = map(int, year_str.split('-'))
@@ -22,186 +31,188 @@ def get_middle_year(year_str):
             return int(year_str.strip())
         else:
             return int(year_str)
-    except:
+    except Exception:
         return None
 
-data['Year'] = data['Year'].apply(get_middle_year)
+def clean_value(value: Any) -> Optional[float]:
+    """Clean value field, handling <, >, and whitespace."""
+    try:
+        if isinstance(value, str):
+            if value.startswith('<') or value.startswith('>'):
+                return float(value[1:].strip())
+            return float(value.strip())
+        return float(value)
+    except Exception:
+        return None
 
-# --- Step 4: Clean 'Value' Field ---
-def clean_value(value):
-    if isinstance(value, str):
-        if value.startswith('<') or value.startswith('>'):
-            return float(value[1:].strip())
-        return float(value.strip())
-    return value
+def load_and_clean_data(filepath: str) -> pd.DataFrame:
+    """Load and clean the FAO data."""
+    if not os.path.exists(filepath):
+        st.error(f"Data file '{filepath}' not found. Please upload it to the app directory.")
+        st.stop()
+    data = pd.read_csv(filepath)
+    data['Year'] = data['Year'].apply(get_middle_year)
+    data['Value'] = data['Value'].apply(clean_value)
+    data['Region'] = data['Area'].map(REGION_MAP)
+    return data
 
-data['Value'] = data['Value'].apply(clean_value)
+# --- UI Sections ---
+def show_keywords():
+    st.markdown(
+        """
+        <div style='margin-bottom: 20px;'>
+            <span style='background-color:#ffe066; color:#333; padding:6px 14px; border-radius:18px; margin-right:10px; font-weight:bold;'>Food Security</span>
+            <span style='background-color:#b2f2ff; color:#333; padding:6px 14px; border-radius:18px; margin-right:10px; font-weight:bold;'>Agrarian Reform</span>
+            <span style='background-color:#ffd6e0; color:#333; padding:6px 14px; border-radius:18px; font-weight:bold;'>Fertilizer Subsidy</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-# --- Step 5: Region Mapping ---
-region_map = {
-    'Indonesia': 'Southeast Asia', 'Malaysia': 'Southeast Asia', 'Thailand': 'Southeast Asia',
-    'Vietnam': 'Southeast Asia', 'Viet Nam': 'Southeast Asia', 'Philippines': 'Southeast Asia',
-    'China': 'East Asia', 'Japan': 'East Asia', 'South Korea': 'East Asia', 'Republic of Korea': 'East Asia',
-    'Nigeria': 'Sub-Saharan Africa', 'Kenya': 'Sub-Saharan Africa', 'Egypt': 'MENA',
-    'Brazil': 'Latin America', 'India': 'South Asia'
-}
-data['Region'] = data['Area'].map(region_map)
+def show_country_filter(data: pd.DataFrame) -> list:
+    return st.sidebar.multiselect(
+        "Select Countries to Compare:",
+        options=sorted(data['Area'].unique()),
+        default=DEFAULT_COUNTRIES
+    )
 
-# --- Step 6: Streamlit UI ---
-st.title("Global Undernourishment Explorer")
-st.markdown("""
-This app presents a comparative exploration of **Prevalence of Undernourishment (PoU)** across selected countries,
-with focus on institutional, economic, and political dynamics.
-""")
+def plot_country_trends(filtered: pd.DataFrame):
+    fig = px.line(
+        filtered,
+        x="Year", y="Value", color="Area",
+        labels={"Value": "Prevalence of Undernourishment (%)"},
+        title="Trends in Undernourishment Across Selected Countries",
+        markers=True
+    )
+    fig.update_layout(height=600)
+    st.plotly_chart(fig)
 
-# Sidebar filter
-countries = st.sidebar.multiselect(
-    "Select Countries to Compare:",
-    options=sorted(data['Area'].unique()),
-    default=['Indonesia', 'Viet Nam', 'Philippines', 'India', 'Egypt', 'Brazil', 'Nigeria', 'Japan', 'Republic of Korea', 'China']
-)
+def plot_regional_trends(filtered: pd.DataFrame):
+    st.subheader("Regional Trends")
+    region_avg = filtered.dropna(subset=['Region']).groupby(['Region', 'Year'])['Value'].mean().reset_index()
+    fig2 = px.line(
+        region_avg,
+        x='Year', y='Value', color='Region',
+        title="Regional Average of Undernourishment"
+    )
+    st.plotly_chart(fig2)
 
-# Keywords highlight section
-st.markdown("""
-<div style='margin-bottom: 20px;'>
-    <span style='background-color:#ffe066; color:#333; padding:6px 14px; border-radius:18px; margin-right:10px; font-weight:bold;'>Food Security</span>
-    <span style='background-color:#b2f2ff; color:#333; padding:6px 14px; border-radius:18px; margin-right:10px; font-weight:bold;'>Agrarian Reform</span>
-    <span style='background-color:#ffd6e0; color:#333; padding:6px 14px; border-radius:18px; font-weight:bold;'>Fertilizer Subsidy</span>
-</div>
-""", unsafe_allow_html=True)
+def show_narrative():
+    with st.expander("Narrative Analysis"):
+        st.markdown(
+            """
+            - **Indonesia** shows consistent improvement in PoU due to expanding social protection and food policy.
+            - **Brazil** and **Egypt** reversed their progress post-2015, likely due to policy rollbacks and macro shocks.
+            - **China**, **Japan**, and **Korea** maintain very low PoU due to strong institutions and agrarian reform legacy.
+            - **Nigeria** and **India** show volatility, highlighting gaps in governance and food system resilience.
 
-# Filter data
-item = 'Prevalence of undernourishment (percent) (3-year average)'
-filtered = data[(data['Area'].isin(countries)) & (data['Item'] == item)]
+            This supports the thesis that **institutional quality** and **policy consistency** are stronger predictors of hunger elimination than GDP growth alone.
+            """
+        )
 
-# Plot country trends
-fig = px.line(
-    filtered,
-    x="Year", y="Value", color="Area",
-    labels={"Value": "Prevalence of Undernourishment (%)"},
-    title="Trends in Undernourishment Across Selected Countries",
-    markers=True
-)
-fig.update_layout(height=600)
-st.plotly_chart(fig)
+def show_key_insights():
+    with st.expander("Key Insights from International Organizations and Research"):
+        st.markdown(
+            """
+            ### International Organizations' Perspectives
+            #### World Bank
+            - Food security is increasingly linked to climate resilience and sustainable agriculture
+            - Indonesia's progress in reducing undernourishment is attributed to its comprehensive social protection system (JPS)
+            - Key challenge: Balancing agricultural productivity with environmental sustainability
+            #### United Nations
+            - SDG 2 (Zero Hunger) progress is uneven across regions
+            - Indonesia's success in reducing stunting through multi-sectoral approach
+            - Emphasis on food system transformation for long-term sustainability
+            #### Asian Development Bank
+            - Southeast Asia's food security depends on regional cooperation
+            - Indonesia's role as a regional food security leader
+            - Investment in agricultural infrastructure is crucial for long-term food security
+            ### Key Research Findings
+            1. **"Why Nations Fail" (Acemoglu & Robinson, 2012)**
+               - Indonesia's institutional reforms post-1998 have been crucial for food security
+               - Inclusive economic institutions correlate with better food security outcomes
+               - The role of political stability in maintaining food security policies
+            2. **"Guns, Germs, and Steel" (Diamond, 1997)**
+               - Geographic advantages in Indonesia's agricultural potential
+               - Historical patterns of food production and distribution
+               - Impact of natural resources on food security
+            3. **"The Bottom Billion" (Collier, 2007)**
+               - Indonesia's success in avoiding the "poverty trap"
+               - Importance of governance in food security
+               - Role of international trade in food security
+            ### Indonesia-Specific Context
+            #### Historical Context
+            - From food importer to self-sufficiency in key commodities
+            - Success of rice self-sufficiency programs
+            - Challenges in maintaining food security during economic transitions
+            #### Current Challenges
+            - Urban-rural divide in food access
+            - Climate change impact on agricultural productivity
+            - Need for modern agricultural practices
+            #### Future Outlook
+            - Digital agriculture opportunities
+            - Sustainable food systems development
+            - Regional food security leadership role
+            ### Interesting Facts from Literature
+            #### From "Why Nations Fail"
+            - Countries with extractive institutions tend to have higher food insecurity
+            - Political stability is crucial for long-term food security
+            - The role of property rights in agricultural development
+            #### From "Guns, Germs, and Steel"
+            - Indonesia's unique position in the "Fertile Crescent" of Southeast Asia
+            - Historical patterns of agricultural innovation
+            - Geographic advantages in food production
+            #### From "The Bottom Billion"
+            - Indonesia's success in avoiding common development traps
+            - The importance of governance in food security
+            - Role of international trade in food security
+            """
+        )
 
-# Regional average trends
-st.subheader("Regional Trends")
-region_avg = filtered.dropna(subset=['Region']).groupby(['Region', 'Year'])['Value'].mean().reset_index()
-fig2 = px.line(
-    region_avg,
-    x='Year', y='Value', color='Region',
-    title="Regional Average of Undernourishment"
-)
-st.plotly_chart(fig2)
+def show_fertilizer_analysis():
+    with st.expander("Fertilizer Subsidy Analysis: Indonesia and Lessons from East Asia"):
+        st.markdown(
+            """
+            ### Indonesia's Fertilizer Subsidy Policy
+            - Indonesia has long used fertilizer subsidies to support smallholder farmers and boost rice production.
+            - While subsidies have contributed to food self-sufficiency, they have also led to inefficiencies, overuse, and environmental concerns.
+            - Recent reforms aim to better target subsidies and promote sustainable practices.
+            ### Lessons from South Korea and Japan
+            - **South Korea**: Transitioned from broad subsidies to targeted support, investing in rural infrastructure, education, and technology adoption. This shift improved productivity and environmental outcomes.
+            - **Japan**: Focused on quality improvement, farmer cooperatives, and integrated rural development, rather than just input subsidies. Emphasis on innovation and value-added agriculture.
+            ### What Indonesia Can Learn
+            - Move from blanket subsidies to targeted, data-driven support for the most vulnerable farmers.
+            - Invest in agricultural extension, digital tools, and farmer education to improve fertilizer efficiency.
+            - Encourage crop diversification and sustainable practices to reduce environmental impact.
+            - Foster farmer organizations and cooperatives for better bargaining power and knowledge sharing.
+            ### Other Thriving Agriculture Countries
+            - Countries like the Netherlands and Israel have succeeded through technology, efficient resource use, and strong research-extension linkages.
+            - Policy focus: Innovation, sustainability, and market access rather than just subsidies.
+            **In summary:** Indonesia's fertilizer subsidy reform should be part of a broader strategy for sustainable, resilient, and competitive agriculture, learning from both regional neighbors and global leaders.
+            """
+        )
 
-# Narrative section
-with st.expander("Narrative Analysis"):
-    st.markdown("""
-    - **Indonesia** shows consistent improvement in PoU due to expanding social protection and food policy.
-    - **Brazil** and **Egypt** reversed their progress post-2015, likely due to policy rollbacks and macro shocks.
-    - **China**, **Japan**, and **Korea** maintain very low PoU due to strong institutions and agrarian reform legacy.
-    - **Nigeria** and **India** show volatility, highlighting gaps in governance and food system resilience.
+# --- Main App ---
+def main():
+    st.title("Global Undernourishment Explorer")
+    st.markdown(
+        """
+        This app presents a comparative exploration of **Prevalence of Undernourishment (PoU)** across selected countries,
+        with focus on institutional, economic, and political dynamics.
+        """
+    )
+    data = load_and_clean_data(DATA_FILE)
+    show_keywords()
+    countries = show_country_filter(data)
+    filtered = data[(data['Area'].isin(countries)) & (data['Item'] == ITEM_UNDERNOURISHMENT)]
+    plot_country_trends(filtered)
+    plot_regional_trends(filtered)
+    show_narrative()
+    show_key_insights()
+    show_fertilizer_analysis()
 
-    This supports the thesis that **institutional quality** and **policy consistency** are stronger predictors of hunger elimination than GDP growth alone.
-    """)
-
-# Key Insights Section
-with st.expander("Key Insights from International Organizations and Research"):
-    st.markdown("""
-    ### International Organizations' Perspectives
-    
-    #### World Bank
-    - Food security is increasingly linked to climate resilience and sustainable agriculture
-    - Indonesia's progress in reducing undernourishment is attributed to its comprehensive social protection system (JPS)
-    - Key challenge: Balancing agricultural productivity with environmental sustainability
-    
-    #### United Nations
-    - SDG 2 (Zero Hunger) progress is uneven across regions
-    - Indonesia's success in reducing stunting through multi-sectoral approach
-    - Emphasis on food system transformation for long-term sustainability
-    
-    #### Asian Development Bank
-    - Southeast Asia's food security depends on regional cooperation
-    - Indonesia's role as a regional food security leader
-    - Investment in agricultural infrastructure is crucial for long-term food security
-
-    ### Key Research Findings
-    
-    1. **"Why Nations Fail" (Acemoglu & Robinson, 2012)**
-       - Indonesia's institutional reforms post-1998 have been crucial for food security
-       - Inclusive economic institutions correlate with better food security outcomes
-       - The role of political stability in maintaining food security policies
-    
-    2. **"Guns, Germs, and Steel" (Diamond, 1997)**
-       - Geographic advantages in Indonesia's agricultural potential
-       - Historical patterns of food production and distribution
-       - Impact of natural resources on food security
-    
-    3. **"The Bottom Billion" (Collier, 2007)**
-       - Indonesia's success in avoiding the "poverty trap"
-       - Importance of governance in food security
-       - Role of international trade in food security
-
-    ### Indonesia-Specific Context
-    
-    #### Historical Context
-    - From food importer to self-sufficiency in key commodities
-    - Success of rice self-sufficiency programs
-    - Challenges in maintaining food security during economic transitions
-    
-    #### Current Challenges
-    - Urban-rural divide in food access
-    - Climate change impact on agricultural productivity
-    - Need for modern agricultural practices
-    
-    #### Future Outlook
-    - Digital agriculture opportunities
-    - Sustainable food systems development
-    - Regional food security leadership role
-
-    ### Interesting Facts from Literature
-    
-    #### From "Why Nations Fail"
-    - Countries with extractive institutions tend to have higher food insecurity
-    - Political stability is crucial for long-term food security
-    - The role of property rights in agricultural development
-    
-    #### From "Guns, Germs, and Steel"
-    - Indonesia's unique position in the "Fertile Crescent" of Southeast Asia
-    - Historical patterns of agricultural innovation
-    - Geographic advantages in food production
-    
-    #### From "The Bottom Billion"
-    - Indonesia's success in avoiding common development traps
-    - The importance of governance in food security
-    - Role of international trade in food security
-    """)
-
-# Fertilizer Subsidy Analysis Section
-with st.expander("Fertilizer Subsidy Analysis: Indonesia and Lessons from East Asia"):
-    st.markdown("""
-    ### Indonesia's Fertilizer Subsidy Policy
-    - Indonesia has long used fertilizer subsidies to support smallholder farmers and boost rice production.
-    - While subsidies have contributed to food self-sufficiency, they have also led to inefficiencies, overuse, and environmental concerns.
-    - Recent reforms aim to better target subsidies and promote sustainable practices.
-    
-    ### Lessons from South Korea and Japan
-    - **South Korea**: Transitioned from broad subsidies to targeted support, investing in rural infrastructure, education, and technology adoption. This shift improved productivity and environmental outcomes.
-    - **Japan**: Focused on quality improvement, farmer cooperatives, and integrated rural development, rather than just input subsidies. Emphasis on innovation and value-added agriculture.
-    
-    ### What Indonesia Can Learn
-    - Move from blanket subsidies to targeted, data-driven support for the most vulnerable farmers.
-    - Invest in agricultural extension, digital tools, and farmer education to improve fertilizer efficiency.
-    - Encourage crop diversification and sustainable practices to reduce environmental impact.
-    - Foster farmer organizations and cooperatives for better bargaining power and knowledge sharing.
-    
-    ### Other Thriving Agriculture Countries
-    - Countries like the Netherlands and Israel have succeeded through technology, efficient resource use, and strong research-extension linkages.
-    - Policy focus: Innovation, sustainability, and market access rather than just subsidies.
-    
-    **In summary:** Indonesia's fertilizer subsidy reform should be part of a broader strategy for sustainable, resilient, and competitive agriculture, learning from both regional neighbors and global leaders.
-    """)
+if __name__ == "__main__":
+    main()
 
 # --- Step 7: File Management Notes (for Jupyter/Streamlit) ---
 # - In Jupyter, use `Upload` button or `os.listdir()` to verify your file location
