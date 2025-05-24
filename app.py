@@ -70,10 +70,27 @@ def show_keywords():
     )
 
 def show_country_filter(data: pd.DataFrame) -> list:
+    st.sidebar.markdown("""
+    <style>
+    /* Make the multiselect box taller and wider */
+    section[data-testid="stSidebar"] .stMultiSelect > div {
+        min-height: 300px;
+        max-height: 400px;
+        width: 100% !important;
+    }
+    /* Make the options easier to read */
+    section[data-testid="stSidebar"] .stMultiSelect .css-1wa3eu0-placeholder {
+        font-size: 1.1em;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    st.sidebar.markdown("**Select Countries to Compare:**")
+    st.sidebar.caption("Tip: Start typing or scroll to find countries. You can select multiple.")
     return st.sidebar.multiselect(
-        "Select Countries to Compare:",
+        "",
         options=sorted(data['Area'].unique()),
-        default=DEFAULT_COUNTRIES
+        default=DEFAULT_COUNTRIES,
+        key="country_multiselect"
     )
 
 def plot_country_trends(filtered: pd.DataFrame):
@@ -199,6 +216,8 @@ def main():
         """
         This app presents a comparative exploration of **Prevalence of Undernourishment (PoU)** across selected countries,
         with focus on institutional, economic, and political dynamics.
+        made by Rudy Prasetiya (rudyhendra@iuj.ac.jp) a.k.a asfalanoij | 2025-05-24
+        Data source: https://www.fao.org/faostat/en/#data/FS
         """
     )
     data = load_and_clean_data(DATA_FILE)
