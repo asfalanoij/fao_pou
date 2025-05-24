@@ -103,6 +103,37 @@ def plot_country_trends(filtered: pd.DataFrame):
     )
     fig.update_layout(height=600)
     st.plotly_chart(fig)
+    # Add detailed, small-font scientific explanation below the plot
+    st.markdown(
+        """
+        <div style='font-size:0.85em; color:#aaa; margin-top: -10px;'>
+        <b>What Does High Undernourishment Really Mean, and Why Does It Matter?</b><br>
+        Undernourishment means that people do not get enough food to meet their minimum daily energy (calorie) requirements. In simple terms, it's a measure of chronic hunger—when people regularly go to bed hungry or do not have enough nutritious food to lead healthy, active lives.<br><br>
+        <b>What the Chart Shows</b><br>
+        The chart displays the "Prevalence of Undernourishment (%)" for several countries over time. A high percentage means a large share of the population is not getting enough to eat. For example, if a country's line is at 15%, that means 15 out of every 100 people are undernourished.<br><br>
+        <b>Why High Undernourishment Matters</b><br>
+        <u>Human Health and Development</u><br>
+        - Chronic undernourishment leads to stunted growth in children, weak immune systems, and higher risk of disease.<br>
+        - It affects brain development, making it harder for children to learn and succeed in school.<br>
+        - Adults who are undernourished are less productive and more likely to suffer from illness.<br>
+        <u>Economic Impact</u><br>
+        - A hungry population cannot work or learn effectively, which slows down economic growth.<br>
+        - Countries with high undernourishment often struggle to break out of poverty because their people are not healthy enough to be productive.<br>
+        <u>Social Stability</u><br>
+        - Food insecurity can lead to social unrest, migration, and even conflict, as people compete for scarce resources.<br>
+        - It can undermine trust in governments and institutions if people feel their basic needs are not being met.<br>
+        <u>Intergenerational Effects</u><br>
+        - Undernourished mothers are more likely to have underweight babies, continuing the cycle of hunger and poverty.<br><br>
+        <b>Why Should We Care?</b><br>
+        <b>Moral Responsibility:</b> In a world with enough food for everyone, chronic hunger is a tragedy that can and should be solved.<br>
+        <b>Global Goals:</b> Reducing undernourishment is a key part of the United Nations' Sustainable Development Goals (SDG 2: Zero Hunger).<br>
+        <b>Shared Prosperity:</b> Well-nourished populations are healthier, more innovative, and better able to contribute to society.<br><br>
+        <b>In Summary</b><br>
+        High undernourishment is not just a statistic—it represents millions of real people whose lives and futures are at risk. Tackling undernourishment is essential for building healthier, more prosperous, and more stable societies.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 def plot_regional_trends(filtered: pd.DataFrame):
     st.subheader("Regional Trends")
