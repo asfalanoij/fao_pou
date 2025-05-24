@@ -107,7 +107,7 @@ def plot_country_trends(filtered: pd.DataFrame):
         height=600,
         template="plotly_white",
         font=dict(size=15),
-        xaxis=dict(showgrid=False),
+        xaxis=dict(showgrid=True, gridcolor="#e5e5e5"),
         yaxis=dict(showgrid=False),
         legend=dict(font=dict(size=13)),
         margin=dict(l=40, r=40, t=60, b=40)
