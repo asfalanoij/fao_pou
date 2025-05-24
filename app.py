@@ -56,6 +56,15 @@ countries = st.sidebar.multiselect(
     default=['Indonesia', 'Viet Nam', 'Philippines', 'India', 'Egypt', 'Brazil', 'Nigeria', 'Japan', 'Republic of Korea', 'China']
 )
 
+# Keywords highlight section
+st.markdown("""
+<div style='margin-bottom: 20px;'>
+    <span style='background-color:#ffe066; color:#333; padding:6px 14px; border-radius:18px; margin-right:10px; font-weight:bold;'>Food Security</span>
+    <span style='background-color:#b2f2ff; color:#333; padding:6px 14px; border-radius:18px; margin-right:10px; font-weight:bold;'>Agrarian Reform</span>
+    <span style='background-color:#ffd6e0; color:#333; padding:6px 14px; border-radius:18px; font-weight:bold;'>Fertilizer Subsidy</span>
+</div>
+""", unsafe_allow_html=True)
+
 # Filter data
 item = 'Prevalence of undernourishment (percent) (3-year average)'
 filtered = data[(data['Area'].isin(countries)) & (data['Item'] == item)]
@@ -90,6 +99,103 @@ with st.expander("Narrative Analysis"):
     - **Nigeria** and **India** show volatility, highlighting gaps in governance and food system resilience.
 
     This supports the thesis that **institutional quality** and **policy consistency** are stronger predictors of hunger elimination than GDP growth alone.
+    """)
+
+# Key Insights Section
+with st.expander("Key Insights from International Organizations and Research"):
+    st.markdown("""
+    ### International Organizations' Perspectives
+    
+    #### World Bank
+    - Food security is increasingly linked to climate resilience and sustainable agriculture
+    - Indonesia's progress in reducing undernourishment is attributed to its comprehensive social protection system (JPS)
+    - Key challenge: Balancing agricultural productivity with environmental sustainability
+    
+    #### United Nations
+    - SDG 2 (Zero Hunger) progress is uneven across regions
+    - Indonesia's success in reducing stunting through multi-sectoral approach
+    - Emphasis on food system transformation for long-term sustainability
+    
+    #### Asian Development Bank
+    - Southeast Asia's food security depends on regional cooperation
+    - Indonesia's role as a regional food security leader
+    - Investment in agricultural infrastructure is crucial for long-term food security
+
+    ### Key Research Findings
+    
+    1. **"Why Nations Fail" (Acemoglu & Robinson, 2012)**
+       - Indonesia's institutional reforms post-1998 have been crucial for food security
+       - Inclusive economic institutions correlate with better food security outcomes
+       - The role of political stability in maintaining food security policies
+    
+    2. **"Guns, Germs, and Steel" (Diamond, 1997)**
+       - Geographic advantages in Indonesia's agricultural potential
+       - Historical patterns of food production and distribution
+       - Impact of natural resources on food security
+    
+    3. **"The Bottom Billion" (Collier, 2007)**
+       - Indonesia's success in avoiding the "poverty trap"
+       - Importance of governance in food security
+       - Role of international trade in food security
+
+    ### Indonesia-Specific Context
+    
+    #### Historical Context
+    - From food importer to self-sufficiency in key commodities
+    - Success of rice self-sufficiency programs
+    - Challenges in maintaining food security during economic transitions
+    
+    #### Current Challenges
+    - Urban-rural divide in food access
+    - Climate change impact on agricultural productivity
+    - Need for modern agricultural practices
+    
+    #### Future Outlook
+    - Digital agriculture opportunities
+    - Sustainable food systems development
+    - Regional food security leadership role
+
+    ### Interesting Facts from Literature
+    
+    #### From "Why Nations Fail"
+    - Countries with extractive institutions tend to have higher food insecurity
+    - Political stability is crucial for long-term food security
+    - The role of property rights in agricultural development
+    
+    #### From "Guns, Germs, and Steel"
+    - Indonesia's unique position in the "Fertile Crescent" of Southeast Asia
+    - Historical patterns of agricultural innovation
+    - Geographic advantages in food production
+    
+    #### From "The Bottom Billion"
+    - Indonesia's success in avoiding common development traps
+    - The importance of governance in food security
+    - Role of international trade in food security
+    """)
+
+# Fertilizer Subsidy Analysis Section
+with st.expander("Fertilizer Subsidy Analysis: Indonesia and Lessons from East Asia"):
+    st.markdown("""
+    ### Indonesia's Fertilizer Subsidy Policy
+    - Indonesia has long used fertilizer subsidies to support smallholder farmers and boost rice production.
+    - While subsidies have contributed to food self-sufficiency, they have also led to inefficiencies, overuse, and environmental concerns.
+    - Recent reforms aim to better target subsidies and promote sustainable practices.
+    
+    ### Lessons from South Korea and Japan
+    - **South Korea**: Transitioned from broad subsidies to targeted support, investing in rural infrastructure, education, and technology adoption. This shift improved productivity and environmental outcomes.
+    - **Japan**: Focused on quality improvement, farmer cooperatives, and integrated rural development, rather than just input subsidies. Emphasis on innovation and value-added agriculture.
+    
+    ### What Indonesia Can Learn
+    - Move from blanket subsidies to targeted, data-driven support for the most vulnerable farmers.
+    - Invest in agricultural extension, digital tools, and farmer education to improve fertilizer efficiency.
+    - Encourage crop diversification and sustainable practices to reduce environmental impact.
+    - Foster farmer organizations and cooperatives for better bargaining power and knowledge sharing.
+    
+    ### Other Thriving Agriculture Countries
+    - Countries like the Netherlands and Israel have succeeded through technology, efficient resource use, and strong research-extension linkages.
+    - Policy focus: Innovation, sustainability, and market access rather than just subsidies.
+    
+    **In summary:** Indonesia's fertilizer subsidy reform should be part of a broader strategy for sustainable, resilient, and competitive agriculture, learning from both regional neighbors and global leaders.
     """)
 
 # --- Step 7: File Management Notes (for Jupyter/Streamlit) ---
