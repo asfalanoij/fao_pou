@@ -2,9 +2,14 @@
 import pandas as pd
 import streamlit as st
 import plotly.express as px
+import os
 
 # --- Step 2: Load Data File ---
-data = pd.read_csv('FAOSTAT_data_en_4-12-2025.csv')
+DATA_FILE = 'FAOSTAT_data_en_4-12-2025.csv'
+if not os.path.exists(DATA_FILE):
+    st.error(f"Data file '{DATA_FILE}' not found. Please upload it to the app directory.")
+    st.stop()
+data = pd.read_csv(DATA_FILE)
 
 
 # --- Step 3: Clean 'Year' Field ---
