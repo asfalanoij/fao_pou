@@ -43,4 +43,9 @@ venv/
 ENV/
 
 # Streamlit
-.streamlit/ 
+.streamlit/
+
+# Additional dependencies
+streamlit
+pandas
+plotly 
