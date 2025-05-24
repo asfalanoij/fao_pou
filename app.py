@@ -4,7 +4,7 @@ import streamlit as st
 import plotly.express as px
 
 # --- Step 2: Load Data File ---
-data = pd.read_csv('/Users/asfalanoi/DS/Python/FAO/FAOSTAT_data_en_4-12-2025.csv')
+data = pd.read_csv('FAOSTAT_data_en_4-12-2025.csv')
 
 
 # --- Step 3: Clean 'Year' Field ---
