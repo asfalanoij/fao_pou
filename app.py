@@ -283,6 +283,17 @@ def show_fertilizer_analysis():
             **In summary:** Indonesia's fertilizer subsidy reform should be part of a broader strategy for sustainable, resilient, and competitive agriculture, learning from both regional neighbors and global leaders.
             """
         )
+        st.markdown("""
+        <div style='margin-top: 32px; display: flex; gap: 24px; flex-wrap: wrap;'>
+            <a href="https://rudyprasetiya.com" target="_blank" style="text-decoration: none;">
+                <button style="padding:18px 32px; font-size:1.2em; background:#2b6cb0; color:white; border:none; border-radius:12px; cursor:pointer; min-width:200px; margin-bottom:10px;">🌐 Go to Main Page<br><span style='font-size:0.95em;'>rudyprasetiya.com</span></button>
+            </a>
+            <a href="https://www.linkedin.com/in/rudyprasetiya/" target="_blank" style="text-decoration: none;">
+                <button style="padding:18px 32px; font-size:1.2em; background:#0077b5; color:white; border:none; border-radius:12px; cursor:pointer; min-width:200px; margin-bottom:10px;">🔗 Connect on LinkedIn<br><span style='font-size:0.95em;'>linkedin.com/in/rudyprasetiya</span></button>
+            </a>
+        </div>
+        <div style='margin-top: 10px; font-size:1em; color:#888;'>Made by Rudy Prasetiya</div>
+        """, unsafe_allow_html=True)
 
 # --- Main App ---
 def main():
