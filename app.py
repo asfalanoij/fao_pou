@@ -86,12 +86,21 @@ def show_country_filter(data: pd.DataFrame) -> list:
     """, unsafe_allow_html=True)
     st.sidebar.markdown("**Select Countries to Compare:**")
     st.sidebar.caption("Tip: Start typing or scroll to find countries. You can select multiple.")
-    return st.sidebar.multiselect(
+    selected = st.sidebar.multiselect(
         "",
         options=sorted(data['Area'].unique()),
         default=DEFAULT_COUNTRIES,
         key="country_multiselect"
     )
+    # Add button below the filter
+    st.sidebar.markdown("""
+    <div style='margin-top: 20px; text-align: center;'>
+        <a href="https://rudyprasetiya.com" target="_blank">
+            <button style="padding:10px 24px; font-size:1em; background:#2b6cb0; color:white; border:none; border-radius:6px; cursor:pointer;">Go to Main Page<br><span style='font-size:0.9em;'>rudyprasetiya.com</span></button>
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+    return selected
 
 def plot_country_trends(filtered: pd.DataFrame):
     fig = px.line(
