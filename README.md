@@ -142,6 +142,16 @@ To deepen the analysis, the following econometric methods can be applied:
   2. Install dependencies (preferably in a conda environment): `pip install -r requirements.txt`
   3. Run the app: `streamlit run app.py`
 
+## Inclusivity and Accessibility
+
+This app is designed with inclusivity in mind:
+- Uses a colorblind-friendly palette for all charts and visualizations.
+- Clear, large fonts and high-contrast backgrounds for readability.
+- Key scientific explanations are provided in expandable sections for easy navigation by screen readers.
+- <b>Read Aloud</b> button: Users with vision impairment can click the 'Read Aloud' button to have the main summary narrated using their browser's built-in speech synthesis (text-to-speech) feature.
+
+If you have suggestions for further accessibility improvements, please open an issue or pull request!
+
 ---
 
 **Let's use data and evidence to drive better policy for Indonesian farmers and the next generation.** 
