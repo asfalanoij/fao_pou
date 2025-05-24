@@ -203,8 +203,12 @@ def show_fertilizer_analysis():
             - Encourage crop diversification and sustainable practices to reduce environmental impact.
             - Foster farmer organizations and cooperatives for better bargaining power and knowledge sharing.
             ### Other Thriving Agriculture Countries
-            - Countries like the Netherlands and Israel have succeeded through technology, efficient resource use, and strong research-extension linkages.
-            - Policy focus: Innovation, sustainability, and market access rather than just subsidies.
+            - Countries like the Netherlands and Australia have succeeded through advanced technology adoption, efficient resource use, and strong research-extension linkages.
+            - The Netherlands is the world's second-largest agricultural exporter, with over $100 billion in annual exports, despite its small land area.
+            - Australia leads in water-efficient farming and precision agriculture, with wheat yields averaging over 2.0 tons/ha and significant investment in agri-tech R&D.
+            - Both countries invest over 3% of their agricultural GDP in research and innovation, compared to less than 1% in many developing countries.
+            - **Policy focus:** Innovation, sustainability, and market access rather than just subsidies.
+            
             **In summary:** Indonesia's fertilizer subsidy reform should be part of a broader strategy for sustainable, resilient, and competitive agriculture, learning from both regional neighbors and global leaders.
             """
         )
