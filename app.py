@@ -296,6 +296,23 @@ def show_fertilizer_analysis():
     <div style='margin-top: 10px; font-size:1em; color:#888;'>Made by Rudy Prasetiya</div>
     """, unsafe_allow_html=True)
 
+def show_descriptive_stats(filtered: pd.DataFrame):
+    with st.sidebar.expander("Descriptive Statistics & Best Practices"):
+        st.markdown("**Descriptive Statistics (Current Selection):**")
+        stats = filtered['Value'].describe().rename({
+            'count': 'Count', 'mean': 'Mean', 'std': 'Std Dev', 'min': 'Min', '25%': 'Q1', '50%': 'Median', '75%': 'Q3', 'max': 'Max'
+        })
+        st.table(stats)
+        st.markdown("""
+        **Best Practices for Data Analysis:**
+        - Always check for missing or outlier values before drawing conclusions.
+        - Compare both central tendency (mean, median) and spread (std, min, max).
+        - Visualize trends over time and across groups (countries, regions).
+        - Consider context: policy changes, economic shocks, and data limitations.
+        - Use both descriptive and inferential statistics for robust insights.
+        - Document your analysis steps for transparency and reproducibility.
+        """)
+
 # --- Main App ---
 def main():
     st.title("Global Undernourishment Explorer")
@@ -311,6 +328,7 @@ def main():
     show_keywords()
     countries = show_country_filter(data)
     filtered = data[(data['Area'].isin(countries)) & (data['Item'] == ITEM_UNDERNOURISHMENT)]
+    show_descriptive_stats(filtered)
     plot_country_trends(filtered)
     plot_regional_trends(filtered)
     show_narrative()
