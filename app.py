@@ -87,10 +87,11 @@ def show_country_filter(data: pd.DataFrame) -> list:
     st.sidebar.markdown("**Select Countries to Compare:**")
     st.sidebar.caption("Tip: Start typing or scroll to find countries. You can select multiple.")
     selected = st.sidebar.multiselect(
-        "",
+        "Select countries to compare", # Add a descriptive label for accessibility
         options=sorted(data['Area'].unique()),
         default=DEFAULT_COUNTRIES,
-        key="country_multiselect"
+        key="country_multiselect",
+        label_visibility="collapsed" # Hide the label from the UI
     )
     # Add button below the filter
     st.sidebar.markdown("""
