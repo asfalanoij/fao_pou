@@ -24,7 +24,7 @@ The attached mindmap visualizes the complex ecosystem of Indonesia's fertilizer 
 ## Visual Mindmap (with Internal Audit Function)
 
 ```
-SUBSIDI FERTILIZER
+SUBSIDIZED FERTILIZER
 │
 ├── Policy Objectives
 │   ├─ Support smallholder farmers
