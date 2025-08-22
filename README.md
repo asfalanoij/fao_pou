@@ -6,10 +6,6 @@ Hi, I'm an internal auditor with 16 years of experience auditing local governmen
 
 ## Project Overview
 
-[Food Security App](https://foodsecurity.streamlit.app/)
-<img width="1470" height="820" alt="Screenshot 2025-08-23 at 02 23 31" src="https://github.com/user-attachments/assets/fef76f80-2e84-4420-bab6-4d640350e02e" />
-
-
 This Streamlit app provides an interactive dashboard to explore the prevalence of undernourishment (PoU) across selected countries, with a special focus on Indonesia. It highlights the interplay between institutional quality, economic policy, and agricultural interventions—especially fertilizer subsidies—drawing lessons from international best practices.
 
 **Keywords:**
@@ -28,7 +24,7 @@ The attached mindmap visualizes the complex ecosystem of Indonesia's fertilizer 
 ## Visual Mindmap (with Internal Audit Function)
 
 ```
-SUBSIDIZED FERTILIZER
+SUBSIDI FERTILIZER
 │
 ├── Policy Objectives
 │   ├─ Support smallholder farmers
@@ -158,4 +154,4 @@ If you have suggestions for further accessibility improvements, please open an i
 
 ---
 
-**Let's use data and evidence to drive better policy for Indonesian farmers and the next generation.** 
+**Let's use data and evidence to drive better policy for Indonesian farmers and the next generation.**
