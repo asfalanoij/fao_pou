@@ -6,6 +6,7 @@ Hi, I'm an internal auditor with 16 years of experience auditing local governmen
 
 ## Project Overview
 
+[Food Security App](https://foodsecurity.streamlit.app/)
 <img width="1470" height="820" alt="Screenshot 2025-08-23 at 02 23 31" src="https://github.com/user-attachments/assets/fef76f80-2e84-4420-bab6-4d640350e02e" />
 
 
